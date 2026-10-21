@@ -52,7 +52,13 @@ Everything here is installed by one script, `install.sh`. It does not remove or 
    sudo apt update && sudo apt install -y git curl tmux python3 python3-venv
    ```
 
-3. **Node.js 22.19 or newer.** The pi installer in the next step can set this up for you. If you already have Node from nvm, check it with `node -v`.
+3. **Node.js 22.19 or newer.** The pi installer in the next step offers to set this up for you. Or install Ubuntu's own Node first, which is new enough on Ubuntu 26.04:
+
+   ```bash
+   sudo apt install -y nodejs npm
+   ```
+
+   Check it with `node -v`.
 4. **pi itself.** If you do not have it yet, run:
 
    ```bash
@@ -85,6 +91,12 @@ Everything here is installed by one script, `install.sh`. It does not remove or 
    If it says "permission denied", run `bash install.sh` instead.
 
 The first run takes several minutes, mostly because it downloads Chromium (about 150 MB). You can run it again at any time. It only changes what is out of date.
+
+3. **Fresh Ubuntu only:** if the installer says Chromium is missing system libraries, run this once (it asks for your password):
+
+   ```bash
+   cd ~/.pi/agent/extensions/browser && sudo npx playwright-core install-deps chromium
+   ```
 
 When it finishes, it prints a short checklist. The steps below are the same, with more detail.
 

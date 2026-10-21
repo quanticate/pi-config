@@ -321,8 +321,15 @@ setup_chromium() {
     warn "Chromium did not install. Try again later with:"
     warn "  cd ~/.pi/agent/extensions/browser && npx playwright-core install chromium"
   fi
-  info "If Chromium later complains about missing system libraries, run this once (it asks for your password):"
-  info "  cd ~/.pi/agent/extensions/browser && sudo npx playwright-core install-deps chromium"
+  # A fresh Ubuntu lacks Chromium's system libraries. Test-launch it; if it
+  # fails, tell the user the one sudo command to fix it (we never run sudo).
+  if (cd "$AGENT_DIR/extensions/browser" && timeout 60 node -e 'require("playwright-core").chromium.launch().then(b => b.close()).catch(() => process.exit(1))') >/dev/null 2>&1; then
+    info "Chromium starts correctly"
+  else
+    CHROMIUM_NEEDS_DEPS=1
+    warn "Chromium is missing system libraries. Run this once (it asks for your password):"
+    warn "  cd ~/.pi/agent/extensions/browser && sudo npx playwright-core install-deps chromium"
+  fi
 }
 
 # ---------------------------------------------------------------------------
@@ -346,6 +353,13 @@ install_browser_mcp_lite() {
 
   info "installing server packages"
   npm_install_dir "$BMCL_DIR/server"
+  # Create the pairing token now (kept if it already exists), so pi's MCP
+  # adapter does not show a connection error on every start before pairing.
+  if (cd "$BMCL_DIR/server" && node -e 'import("./token.js").then(m => m.ensureToken())'); then
+    info "pairing token ready in ~/.browser-mcp-secrets.json"
+  else
+    warn "could not create the pairing token; run ~/.pi/agent/scripts/start-browser-mcp-lite.sh once"
+  fi
 }
 
 # ---------------------------------------------------------------------------
@@ -375,6 +389,14 @@ setup_node
 setup_chromium
 install_browser_mcp_lite
 install_pi_packages
+
+if [ "${CHROMIUM_NEEDS_DEPS:-0}" = 1 ]; then
+  cat <<EOF
+
+⚠️  Chromium needs system libraries before the browser tools will work. Run once:
+      cd ~/.pi/agent/extensions/browser && sudo npx playwright-core install-deps chromium
+EOF
+fi
 
 cat <<EOF
 
