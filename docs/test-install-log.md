@@ -4,7 +4,7 @@ A record of every step used to install pi and this config on a blank machine, so
 
 ## Test machine
 
-- Proxmox VM, Ubuntu 26.04.1 LTS, user `admini`. Plain Ubuntu, not WSL; the steps are the same.
+- A fresh Ubuntu 26.04.1 LTS virtual machine. Plain Ubuntu, not WSL; the steps are the same.
 - Already present: git, curl, tmux, python3. Not present: Node.js, npm, pi.
 
 ## Steps (2026-10-21)
