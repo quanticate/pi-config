@@ -1,0 +1,17 @@
+{
+  "settings": {
+    "directTools": false,
+    "hostConfigDiscovery": "off"
+  },
+  "mcpServers": {
+    "browser": {
+      "url": "http://127.0.0.1:12307/mcp",
+      "auth": "bearer",
+      "bearerToken": "!node -p \"require(require('os').homedir() + '/.browser-mcp-secrets.json').token\"",
+      "lifecycle": "lazy",
+      "exposeResources": true,
+      "directTools": true,
+      "toolPrefix": "mcp"
+    }
+  }
+}

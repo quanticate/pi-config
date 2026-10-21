@@ -1,0 +1,25 @@
+# Installed dependencies and Python environments
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+
+# Backups made by install.sh
+*.bak*
+
+# Anything that could hold a key or a login
+auth.json
+models-store.json
+.env
+.env.*
+*.secrets.json
+
+# Logs, caches and runtime data
+*.log
+mcp-cache.json
+crashes.json
+.profile/
+npm/
+install/
+sessions/
+.DS_Store
