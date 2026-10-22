@@ -35,6 +35,23 @@ fi
 # ---------------------------------------------------------------------------
 # 1. Prerequisites. Nothing is changed until all of these pass.
 # ---------------------------------------------------------------------------
+# Sub-agents run in tmux panes, so offer to install it rather than just stop.
+install_tmux() {
+  command -v tmux >/dev/null 2>&1 && return
+  command -v apt-get >/dev/null 2>&1 || return
+  [ -t 0 ] || return   # only ask when someone is at the keyboard
+  local answer
+  read -r -p "    tmux is not installed. Install it now? It asks for your password. [Y/n] " answer
+  case "$answer" in
+    [nN]*) return ;;
+  esac
+  if sudo apt-get update -qq && sudo apt-get install -y -qq tmux; then
+    info "installed tmux"
+  else
+    warn "tmux did not install"
+  fi
+}
+
 check_prereqs() {
   say "Checking prerequisites"
   local missing=0
@@ -50,6 +67,7 @@ check_prereqs() {
 
   check_cmd git    "sudo apt install -y git"
   check_cmd curl   "sudo apt install -y curl"
+  install_tmux
   check_cmd tmux   "sudo apt install -y tmux"
   check_cmd python3 "sudo apt install -y python3 python3-venv"
   check_cmd npm    "installed with Node.js - see the Node.js line below"
